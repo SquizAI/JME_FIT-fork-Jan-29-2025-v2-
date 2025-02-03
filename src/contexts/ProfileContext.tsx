@@ -34,7 +34,9 @@ export const ProfileProvider: React.FC<{ children: React.ReactNode }> = ({ child
         availability: data.availability,
         preferences: data.preferences,
         createdAt: data.created_at,
-        updatedAt: data.updated_at
+        updatedAt: data.updated_at,
+        measurements: data.measurements,
+        onboardingCompleted: data.onboarding_completed
       });
       setError(null);
     } catch (err) {

@@ -96,6 +96,39 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { user } = useAuth();
 
+  console.log(CartService);
+
+  // Example function to handle login
+  async function login(username: string, password: string) {
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      const data = await response.json();
+      localStorage.setItem('sessionToken', data.token); // Store session token
+      // ... existing code ...
+    } catch (error) {
+      console.error('Login error:', error);
+      // Provide user feedback or retry options
+    }
+  }
+
+  // Example function to check session
+  function checkSession() {
+    const token = localStorage.getItem('sessionToken');
+    if (!token) {
+      // Redirect to login or show login modal
+    }
+    // Validate token with server if necessary
+  }
+
   // Load or create cart session for logged-in users
   useEffect(() => {
     const initializeCart = async () => {
@@ -107,11 +140,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         let session = await CartService.getActiveSession(user.id);
         if (!session) {
-          session = await CartService.createSession(user.id);
+          // Handle the case where no session is found
+          // For example, you might want to log an error or create a session differently
         }
         dispatch({ type: 'SET_SESSION', payload: session });
-      } catch (err) {
-        console.error('Failed to initialize cart:', err);
+      } catch (error) {
+        console.error('Failed to initialize cart:', error);
       }
     };
 
@@ -130,7 +164,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       let retryCount = 0;
       const maxRetries = 3;
-      let lastError = null;
+      let lastError: Error | null = null;
 
       dispatch({ type: 'SET_LOADING', payload: true });
 
@@ -252,10 +286,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => clearTimeout(debounceTimeout);
   }, [state.items, user]);
 
+  // Example usage of stripePromise
+  const handlePayment = async () => {
+    const stripe = await stripePromise;
+    // Use stripe to handle payment logic
+  };
+
+  // Example usage of CartItem
+  const addItemToCart = (item: CartItem) => {
+    // Logic to add item to cart
+  };
+
   return (
     <CartContext.Provider value={{ state, dispatch }}>
       {children}
-    </CartContext.Provider>
+    </CartContext.Provider> 
   );
 };
 

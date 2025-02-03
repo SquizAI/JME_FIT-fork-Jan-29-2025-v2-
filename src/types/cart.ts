@@ -16,13 +16,13 @@ export interface CartSession {
   metadata?: Record<string, any>;
 }
 
-export interface CartState {
+export type CartState = {
   items: CartItem[];
   isOpen: boolean;
   loading: boolean;
   error: string | null;
   session: CartSession | null;
-}
+};
 
 export type CartAction =
   | { type: 'SET_SESSION'; payload: CartSession }
